@@ -162,9 +162,8 @@ package body Photon_Mapping with SPARK_Mode => On is
       procedure Median_Split (Left, Right : Positive; Depth : Natural) is
          Axis   : constant Natural := Depth mod 3;
          Mid    : constant Positive := (Left + Right) / 2;
-         I, J   : Positive;
-         Pivot  : Real;
          Tmp    : Photon;
+         J      : Positive;
       begin
          if Left >= Right then
             if Left <= Tree.Length then
@@ -173,27 +172,14 @@ package body Photon_Mapping with SPARK_Mode => On is
             return;
          end if;
 
-         I := Left;
-         J := Right;
-         Pivot := Get_Coord (Tree.Photons (Mid).Position, Axis);
-
-         while I <= J loop
-            while Get_Coord (Tree.Photons (I).Position, Axis) < Pivot loop
-               I := I + 1;
-            end loop;
-            while Get_Coord (Tree.Photons (J).Position, Axis) > Pivot loop
+         for I in Left + 1 .. Right loop
+            Tmp := Tree.Photons (I);
+            J := I;
+            while J > Left and then Get_Coord (Tree.Photons (J - 1).Position, Axis) > Get_Coord (Tmp.Position, Axis) loop
+               Tree.Photons (J) := Tree.Photons (J - 1);
                J := J - 1;
             end loop;
-
-            if I <= J then
-               Tmp := Tree.Photons (I);
-               Tree.Photons (I) := Tree.Photons (J);
-               Tree.Photons (J) := Tmp;
-               I := I + 1;
-               if J > 1 then
-                  J := J - 1;
-               end if;
-            end if;
+            Tree.Photons (J) := Tmp;
          end loop;
 
          Tree.Photons (Mid).Plane := Axis;
@@ -230,7 +216,10 @@ package body Photon_Mapping with SPARK_Mode => On is
          end loop;
          Res.Photons (Insert_Pos) := P;
          Res.Distances_Sq (Insert_Pos) := Dist_Sq;
-         Res.Max_Distance_Sq := Res.Distances_Sq (1);
+         
+         if Res.Count = Capacity then
+            Res.Max_Distance_Sq := Res.Distances_Sq (1);
+         end if;
       elsif Dist_Sq < Res.Max_Distance_Sq then
          Res.Photons (1) := P;
          Res.Distances_Sq (1) := Dist_Sq;
