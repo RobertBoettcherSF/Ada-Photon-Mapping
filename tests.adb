@@ -162,7 +162,7 @@ begin
       Rad  : Spectral_Power;
    begin
       Tree.Length := 1;
-      Tree.Photons (1) := (Position => (0.0, 0.0, 0.0),
+      Tree.Photons (1) := (Position => (0.5, 0.0, 0.0),
                            Power    => (R => 10.0, G => 10.0, B => 10.0),
                            Incident => (0.0, 0.0, -1.0),
                            Plane    => 0);
