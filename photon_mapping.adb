@@ -258,11 +258,11 @@ package body Photon_Mapping with SPARK_Mode => On is
       Max_Dist_Sq : Real;
       Result      : out Query_Result) is
       procedure Search (Index : Positive) is
-         Axis    : Natural;
-         Delta   : Real;
-         Dist_Sq : Real;
-         Left    : constant Positive := Index * 2;
-         Right   : constant Positive := (Index * 2) + 1;
+         Axis       : Natural;
+         Diff_Coord : Real;
+         Dist_Sq    : Real;
+         Left       : constant Positive := Index * 2;
+         Right      : constant Positive := (Index * 2) + 1;
       begin
          if Index > Tree.Length then
             return;
@@ -274,16 +274,16 @@ package body Photon_Mapping with SPARK_Mode => On is
          end if;
 
          Axis := Tree.Photons (Index).Plane;
-         Delta := Get_Coord (Center, Axis) - Get_Coord (Tree.Photons (Index).Position, Axis);
+         Diff_Coord := Get_Coord (Center, Axis) - Get_Coord (Tree.Photons (Index).Position, Axis);
 
-         if Delta < 0.0 then
+         if Diff_Coord < 0.0 then
             Search (Left);
-            if (Delta * Delta) < Result.Max_Distance_Sq then
+            if (Diff_Coord * Diff_Coord) < Result.Max_Distance_Sq then
                Search (Right);
             end if;
          else
             Search (Right);
-            if (Delta * Delta) < Result.Max_Distance_Sq then
+            if (Diff_Coord * Diff_Coord) < Result.Max_Distance_Sq then
                Search (Left);
             end if;
          end if;
