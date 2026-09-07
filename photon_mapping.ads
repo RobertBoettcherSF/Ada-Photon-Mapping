@@ -59,7 +59,7 @@ package Photon_Mapping with SPARK_Mode => On is
 
    type Query_Result (Max_Results : Natural) is record
       Photons         : Photon_Array (1 .. Max_Results);
-      Distances_Sq    : Distance_Array (1 .. Max_Results) := (others => 0.0);
+      Distances_Sq    : Distance_Array (1 .. Max_Results) := [others => 0.0];
       Count           : Natural := 0;
       Max_Distance_Sq : Real    := 0.0;
    end record;
